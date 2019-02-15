@@ -38,5 +38,11 @@ func List(c *gin.Context) {
 
 // Read -
 func Read(c *gin.Context) {
-	log.Info().Str("lalala", "alalala").Msg("")
+	file := c.Param("file")
+	data, err := ioutil.ReadFile("/files/" + file)
+	if err != nil {
+		c.String(http.StatusNotFound, err.Error())
+		return
+	}
+	c.String(http.StatusOK, string(data))
 }

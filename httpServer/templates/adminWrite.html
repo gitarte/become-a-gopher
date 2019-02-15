@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ .title }}</title>
+    </head>
+
+    <body>
+        <h1>You edit file {{ .file }}</h1>
+
+        <form action="/admin/write" method="POST">
+            <input type="hidden" name="file" value="{{ .file }}">
+            <textarea name="content" rows="30" cols="50">
+                {{ .content }}
+            </textarea>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+
+</html>
