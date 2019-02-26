@@ -8,6 +8,9 @@ func main() {
 	//	we configure global logger
 	LoadZerolog()
 
+	//	create database access holder
+	db := InitDB()
+
 	//	configure GIN
 	r := gin.New()                                // setup GIN router
 	r.Use(gin.Recovery())                         // this captures any panic and lets the app live
@@ -19,16 +22,18 @@ func main() {
 	//	we define route that is bublic
 	root := r.Group("/")
 	{
-		root.GET("/list", List)
-		root.GET("/read/:file", Read)
+		root.GET("/list", List(db))
+		root.GET("/read/:file", Read(db))
+		root.GET("/accounts", GetAccounts(db))
 	}
 
 	//	we define route that is restricted
 	admin := r.Group("/admin", gin.BasicAuth(AdminUsers))
 	{
-		admin.GET("", AdminRoot)
-		admin.GET("/read/:file", AdminRead)
-		admin.POST("/write", AdminWrite)
+		admin.GET("", AdminRoot(db))
+		admin.GET("/read/:file", AdminRead(db))
+		admin.POST("/write", AdminWrite(db))
+
 	}
 
 	r.Run(":8080")
