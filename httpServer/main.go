@@ -37,7 +37,6 @@ func main() {
 		admin.GET("", AdminRoot(db))
 		admin.GET("/read/:file", AdminRead(db))
 		admin.POST("/write", AdminWrite(db))
-
 	}
 
 	r.Run(":8080")
