@@ -24,7 +24,11 @@ func main() {
 	{
 		root.GET("/list", List(db))
 		root.GET("/read/:file", Read(db))
+
 		root.GET("/accounts", GetAccounts(db))
+		root.POST("/accounts", PostAccounts(db))
+		root.PUT("/accounts", PutAccounts(db))
+		root.DELETE("/accounts/:id", DeleteAccounts(db))
 	}
 
 	//	we define route that is restricted

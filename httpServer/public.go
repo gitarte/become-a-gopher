@@ -96,3 +96,52 @@ func GetAccounts(db *sql.DB) gin.HandlerFunc {
 		c.JSON(http.StatusOK, result)
 	}
 }
+
+// PutAccounts -
+func PutAccounts(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+	}
+}
+
+// PostAccounts -
+func PostAccounts(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var account Account
+		if err := c.BindJSON(&account); err != nil {
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		sql := "INSERT INTO account (username,password,email) VALUES ($1,$2,$3) RETURNING id;"
+		err := db.QueryRow(sql, account.Username, account.Password, account.Email).Scan(&account.ID)
+		if err != nil {
+			c.String(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		//	return results and yes: 201 instead of 200!
+		c.JSON(http.StatusCreated, account)
+	}
+}
+
+// DeleteAccounts -
+func DeleteAccounts(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, err := strconv.ParseInt(idStr, 10, 64)
+		if err != nil {
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		sql := "DELETE FROM account WHERE id=$1 RETURNING id;"
+		_, err = db.Query(sql, id)
+		if err != nil {
+			c.String(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		//	return results and yes: 201 instead of 200!
+		c.String(http.StatusOK, "OK")
+	}
+}
