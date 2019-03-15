@@ -4,23 +4,32 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "mydbuser"
-	password = "mydbpass"
-	dbname   = "mydb"
-)
-
 // InitDB - create abstraction to database
 func InitDB() *sql.DB {
+	host := os.Getenv("POSTGRES_HOST")         //	"localhost"
+	port := os.Getenv("POSTGRES_PORT")         //	5432
+	user := os.Getenv("POSTGRES_USER")         //	"mydbuser"
+	password := os.Getenv("POSTGRES_PASSWORD") //	"mydbpass"
+	dbname := os.Getenv("POSTGRES_DB")         //	"mydb"
+
+	dPort, err := strconv.Atoi(port)
+	if err != nil {
+		log.Fatalf("Faulty DB_PORT %s", err.Error())
+	}
+
 	PsqlInfo := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname,
+		host,
+		dPort,
+		user,
+		password,
+		dbname,
 	)
 
 	// Open does not actually open the connection - it just creates abstraction for use in future
