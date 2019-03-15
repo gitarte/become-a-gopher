@@ -7,5 +7,5 @@ export POSTGRES_DB=mydb
 export POSTGRES_PGDATA=/var/lib/postgresql/data/pgdata
 export POSTGRES_HOST=db
 export POSTGRES_PORT=5432
-docker-compose -f docker-compose.yml build
+docker-compose -f docker-compose.yml $1
 

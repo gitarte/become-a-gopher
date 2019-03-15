@@ -13,6 +13,7 @@ RUN     apt -y update \
         && apt -y autoremove \
         && apt -y clean \
         && apt -y autoclean
+COPY    ./templates /app/templates
 COPY    --from=builder /app/httpServer /app/httpServer
-CMD     ["/app/httpServer"]
+CMD     sleep 5 && /app/httpServer
 
