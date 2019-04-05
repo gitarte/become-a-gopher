@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -14,8 +15,12 @@ import (
 )
 
 // URL to by scrapped
-var URL = "http://www.fabpedigree.com/james/mathmen.htm"
-var UserAgent = "FRIENDLY SCANNER"
+const (
+	URL             = "http://www.fabpedigree.com/james/mathmen.htm"
+	UserAgentValue  = "FRIENDLY SCANNER"
+	UserAgentHeader = "User-Agent"
+	Timeout         = 30
+)
 
 func main() {
 	// Create and modify HTTP request before sending
@@ -23,11 +28,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	request.Header.Set("User-Agent", UserAgent)
+	request.Header.Set(UserAgentHeader, UserAgentValue)
 
 	// Create HTTP client with timeout
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: Timeout * time.Second,
 	}
 
 	// Make request
@@ -40,7 +45,6 @@ func main() {
 	// Copy data from the response to variable
 	bodyBytes, _ := ioutil.ReadAll(response.Body)
 	pageContent := string(bodyBytes)
-	//fmt.Println(pageContent)
 
 	/*
 		=====================================================
@@ -54,7 +58,7 @@ func main() {
 		os.Exit(0)
 	}
 	// offset the infex just after <title> so '<title>' will be excluded
-	titleStartIndex += 7
+	titleStartIndex += len("<title>")
 
 	// Find the index of the closing tag
 	titleEndIndex := strings.Index(pageContent, "</title>")
@@ -64,9 +68,6 @@ func main() {
 	}
 	pageTitle := pageContent[titleStartIndex:titleEndIndex]
 	fmt.Println(pageTitle)
-
-	split := strings.Split(pageContent, `<a href="#top">Top</a>`)
-	fmt.Println(split)
 
 	/*
 		=====================================================
@@ -80,16 +81,19 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading HTTP response body. ", err)
 	}
+
+	mat := make([]string, 0)
 	document.Find("li").Each(
 		func(index int, element *goquery.Selection) {
-			a := element.Find("a")
-			link, _ := a.Attr("href")
-			document.Find("a").Each(
-				func(index int, element *goquery.Selection) {
-					href, _ := element.Attr("href")
-					if href == link {
-						fmt.Println(href)
-					}
-				})
+			a := element.Find("a").Text()
+			if len(a) > 0 {
+				mat = append(mat, a)
+			}
 		})
+
+	sort.Strings(mat)
+
+	fmt.Printf("%v\n", mat)
+	fmt.Println(mat[0])
+	fmt.Println(mat[len(mat)-1])
 }
