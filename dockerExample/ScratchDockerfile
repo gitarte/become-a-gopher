@@ -1,0 +1,13 @@
+# BUILDING APP
+FROM    golang:1.12-alpine AS builder
+WORKDIR /app
+COPY    ./app/* /app/
+RUN     apk update && apk add --no-cache git
+RUN     rm -rf /go/pkg/mod 
+RUN     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /app/example
+
+# RUN
+FROM  scratch
+COPY  --from=builder /app/example  /app/example
+COPY  ./resources/favicon.ico      /app/favicon.ico
+CMD   ["/app/example"] 
