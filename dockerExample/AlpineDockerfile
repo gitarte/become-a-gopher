@@ -1,0 +1,17 @@
+# BUILDING APP
+FROM    golang:1.12-alpine AS builder
+WORKDIR /app
+COPY    ./app/* /app/
+RUN     apk update && apk add --no-cache git
+RUN     rm -rf /go/pkg/mod
+RUN     go build
+
+# RUN
+FROM    alpine:3.10.0
+WORKDIR /app
+COPY    --from=builder /app/example  /app/example
+COPY    ./resources/favicon.ico      /app/favicon.ico
+COPY    ./resources/cron-job         /etc/cron.d/cron-job
+RUN     crontab /etc/cron.d/cron-job
+CMD     crond -f & > /proc/1/fd/1 2>/proc/1/fd/2 \
+        && /app/example
