@@ -36,7 +36,7 @@ func main() {
 	})
 
 	// For each matched request Context will hold the route definition
-	router.POST("/toggle/:pin", func(pin1, pin2 rpio.Pin) gin.HandlerFunc {
+	router.POST("/toggle/:pin", func(p1, p2 rpio.Pin) gin.HandlerFunc {
 		return func(c *gin.Context) {
 			pin, err := strconv.ParseInt(c.Param("pin"), 10, 8)
 			if err != nil {
@@ -45,10 +45,10 @@ func main() {
 
 			switch pin {
 			case 1:
-				pin1.Toggle()
+				p1.Toggle()
 				c.String(http.StatusOK, "pin1 oK")
 			case 2:
-				pin2.Toggle()
+				p2.Toggle()
 				c.String(http.StatusOK, "pin2 oK")
 			default:
 				c.String(http.StatusBadRequest, "wrong pin number")

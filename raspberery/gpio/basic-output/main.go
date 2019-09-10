@@ -28,17 +28,8 @@ func main() {
 	pin1.High() // set 3.3V on pin 19
 	pin2.Low()  // set 0.0V on pin 21
 
-	// "do forever" as you usually do in embedded programming
-	// first the trivial case for presentation purpose only
-	// I need it just to remember to provide an introduction of some concepts
-	// for {
-	// 	pin1.Toggle()
-	// 	pin2.Toggle()
-	// 	time.Sleep(1 * time.Second)
-	// }
 
 	// "do forever" as you usually do in embedded programming
-	// now the better solution
 	tmr1 := time.NewTimer(1 * time.Second)
 	tmr2 := time.NewTimer(3 * time.Second)
 	for {
