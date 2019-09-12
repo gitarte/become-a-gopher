@@ -1,3 +1,7 @@
 tcpServer/tcpServer
 tcpClient/tcpClient
 pgdata/*
+raspberery/gpio/basic-output/basic-output
+raspberery/gpio/web-control/web-control
+raspberery/gpio/pwm-output/pwm-output
+
