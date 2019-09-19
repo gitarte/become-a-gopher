@@ -21,6 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer func() {
+		// rpio.Close() returns error, you may want to handle it before ending the rogram
 		rpio.Close()
 		fmt.Println("GPIO access has been closed")
 	}()
