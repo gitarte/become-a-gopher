@@ -1,5 +1,5 @@
 ### WHICH LIBRARY
-Basicaly what you have Basically what you have is a choice of two:is a choice of two:
+Basically what you have is a choice of two:
 
 * https://gobot.io/
 * https://github.com/stianeikeland/go-rpio
