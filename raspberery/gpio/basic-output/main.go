@@ -33,9 +33,9 @@ func main() {
 	pin1.Output()
 	pin2.Output()
 
-	// set initial states
-	pin1.High() // set 3.3V on pin 19
-	pin2.Low()  // set 0.0V on pin 21
+	// set initial states to 3.3V on booth pins
+	pin1.High()
+	pin2.High()
 
 	// create two timers with duration of 1 and 3 seconds
 	tmr1 := time.NewTimer(duration1)
@@ -50,6 +50,9 @@ func main() {
 	for {
 		select {
 		case <-tmr1.C:
+			// Beware here!
+			// Using timers without Reset inside infinite loop will cause a DEADLOCK.
+			// Therefore it might be considered safer to use NewTicker instead NewTimer
 			pin1.Toggle()                // change pin 19 to it's opposite state
 			tmr1.Reset(duration1)        // we have used timer 1, so we must reset it before next tick
 			fmt.Println("toggle pin 19") //
@@ -58,9 +61,10 @@ func main() {
 			tmr2.Reset(duration2)        // we have used timer 2, so we must reset it before next tick
 			fmt.Println("toggle pin 21") //
 		case <-sig:
-			pin1.Low()               // switch off the pin 19
-			pin2.Low()               // switch off the pin 21
-			fmt.Println("interrupt") //
+			// back to initial state of GPIO befeore ending the program
+			pin1.High()              
+			pin2.High()              
+			fmt.Println("interrupt") 
 			return
 		}
 	}
