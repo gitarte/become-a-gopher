@@ -54,13 +54,22 @@ func main() {
 	for {
 		select {
 		case <-tmr.C:
-			pos := i % l                                   // servo position that we want to set depends on current iteration count divided modulo by the number of available positions
-			i++                                            // increase the counter for next iteration
+			// here we select next position of servo
+			pos := i % l // servo position that we want to set depends on current iteration count divided modulo by the number of available positions
+			i++          // increase the counter for next iteration
+			
+			// here we set choosen position
 			pin.DutyCycle(servoPositions[pos], cycleWidth) // we set the length of the pulse
+			
+			// Beware here!
+			// Using timers without Reset inside infinite loop will cause a DEADLOCK.
+			// Therefore it might be considered safer to use NewTicker instead NewTimer
+			// Or just do not forget to reset the timer
 			tmr.Reset(interval)                            // we have used timer 1, so we must reset it before next tick
 			fmt.Printf("servo set in position %d\n", pos)
 		case <-sig: // Ctrl+C captured
-			pin.DutyCycle(servoPositions[1], cycleWidth) // we set servo in center position and leave the program
+			// we set servo in center position and leave the program
+			pin.DutyCycle(servoPositions[1], cycleWidth) 
 			fmt.Println("interupt")
 			fmt.Println("servo set in center position")
 			return
